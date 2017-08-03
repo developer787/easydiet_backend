@@ -17,9 +17,11 @@ router.post('/crearchofer', api.crearChofer)
 
 
 router.get('/', api.list)
+router.get('/platos', api.platosList)
 // router.post('/', function(req, res, next) {
 //   console.log(req.body);
 //   res.json({ body: 'Juan' });
 // });
+
 
 module.exports = router;
