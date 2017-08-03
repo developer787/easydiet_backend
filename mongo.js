@@ -10,7 +10,7 @@ mongoDB
         console.log('mongodb has been connected');
     })
     .catch(function (err) {
-        console.log('error while trying to connect with mongodb');
+        console.log('error while trying to connect with mongodb: ', err.message);
     });
 
 module.exports = mongoDB;

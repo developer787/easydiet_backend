@@ -105,7 +105,7 @@ exports.crearPlato = function(req, res) {
     nombre: req.body.nombre,
     ingredientes: req.body.ingredientes
   })
-  Customer.findById(plato._id, (err, doc) => {
+  Plato.findById(plato._id, (err, doc) => {
     if (err) {
       res.status(500).send(err);
     }
@@ -119,7 +119,8 @@ exports.crearPlato = function(req, res) {
         }
         else {
           res.json({
-            message: "Plato Actualizado"
+            message: "Plato Actualizado",
+            plato:plato
           })
         }
       })
@@ -127,14 +128,27 @@ exports.crearPlato = function(req, res) {
     }
     else {
       console.log("No se encontro plato...inserting")
-      plato.save(err => console.log(err))
       res.json({
-            message: "Plato Guardado Exitosamente!"
-          })
+       message: "Plato Guardado Exitosamente!",
+       plato:plato
+     })
+      plato.save(err => console.log(err))
     }
 
   })
 }
+
+exports.platosList = function(req, res) {
+  Plato.find(function(err, platos) {
+    if(err){
+      console.log(err)
+    }
+    res.json({
+      message: 'All found',
+      platos})
+  });
+}
+
 // Choferes API
 exports.crearChofer = function(req, res) {
   console.log(req.body)
@@ -168,7 +182,7 @@ exports.crearChofer = function(req, res) {
       console.log("No customer found with that ID...inserting")
       chofer.save(err => console.log(err))
       res.json({
-            message: "Cliente Guardado Exitosamente!"
+            message: "Plato Guardado Exitosamente!"
           })
     }
 
