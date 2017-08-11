@@ -18,6 +18,8 @@ router.post('/crearchofer', api.crearChofer)
 
 router.get('/', api.list)
 router.get('/platos', api.platosList)
+router.get('/reportes', api.reporteSemanal)
+
 // router.post('/', function(req, res, next) {
 //   console.log(req.body);
 //   res.json({ body: 'Juan' });

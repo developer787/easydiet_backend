@@ -188,3 +188,50 @@ exports.crearChofer = function(req, res) {
 
   })
 }
+
+// Reportes API
+
+exports.reporteSemanal = function(req, res) {
+  Plato.find(function(err, platos) {
+    if(err){
+      console.log(err)
+    }
+        Customer.find(function(err, users) {
+      if(err){
+        console.log(err)
+      }
+     
+      const combine = e => {
+        const invalidos = []
+        const { _id, nombre, apellido, alergias, almuerzos, cenas } = e
+        const alergiaCheck = alergia => {
+          const validos = []
+           
+         platos.map(plato => {
+           
+           if(plato.ingredientes.indexOf(alergia, 0) > -1){
+             if(invalidos.indexOf(plato.nombre, 0) > -1){
+               console.log('plato existe')
+               
+             } else {
+               invalidos.push(plato.nombre)
+             }
+             
+           }
+         })
+         return invalidos
+        }
+        
+        const platosInvalidos = alergias.map(alergiaCheck)
+        const platosDenegados =  platosInvalidos.reduce((x, y) => x.findIndex(e=>e.nombre==y.nombre)<0 ? [...x, y]: x, [])
+  
+        return  {_id, nombre, apellido, platosDenegados: platosDenegados[0] || [], almuerzos, cenas, platos}
+      }
+      const report = users.map(combine)
+      console.log(report)
+    res.json({
+      message: 'All found',
+      report})
+  });
+  });
+}
