@@ -10,6 +10,7 @@ var customerSchema = new Schema({
     almuerzos: {type: Object, default: {}},
     cenas: {type: Object, default: {}},
     history: [],
+    comentarios: [],
     alergias: []
 });
 

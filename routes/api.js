@@ -43,8 +43,8 @@ exports.create = function(req, res) {
       console.log("No customer found with that ID...inserting")
       customer.save(err => console.log(err))
       res.json({
-            message: "Cliente Guardado Exitosamente!"
-          })
+        message: "Cliente Guardado Exitosamente!"
+      })
     }
 
   })
@@ -58,42 +58,44 @@ exports.update = function(req, res) {
     almuerzos: req.body.almuerzos,
     cenas: req.body.cenas
   }
- Customer.findByIdAndUpdate(req.body._id, req.body,{upsert: true}, function(err, doc){
-   if(err){
-     console.log(err)
-   }
-   res.json({
-     message: update.nombre + ' fue actualizado!'
-   })
- })
+  Customer.findByIdAndUpdate(req.body._id, req.body, { upsert: true }, function(err, doc) {
+    if (err) {
+      console.log(err)
+    }
+    res.json({
+      message: update.nombre + ' fue actualizado!'
+    })
+  })
 }
 exports.deleteUser = function(req, res) {
   console.log(req.body)
-Customer.findByIdAndRemove(req.body._id, function(err, doc){
-  if(err){
-    console.log(err)
-  }
-  if(doc){
+  Customer.findByIdAndRemove(req.body._id, function(err, doc) {
+    if (err) {
+      console.log(err)
+    }
+    if (doc) {
       res.json({
-    message: req.body.nombre + ' fue borrado!'
-  })
-    
-  } else {
-      res.json({
-    message: 'No se localizo cliente.'
-  })
-  }
+        message: req.body.nombre + ' fue borrado!'
+      })
 
-})
+    }
+    else {
+      res.json({
+        message: 'No se localizo cliente.'
+      })
+    }
+
+  })
 }
 exports.list = function(req, res) {
   Customer.find(function(err, users) {
-    if(err){
+    if (err) {
       console.log(err)
     }
     res.json({
       message: 'All found',
-      users})
+      users
+    })
   });
 }
 
@@ -120,7 +122,7 @@ exports.crearPlato = function(req, res) {
         else {
           res.json({
             message: "Plato Actualizado",
-            plato:plato
+            plato: plato
           })
         }
       })
@@ -129,9 +131,9 @@ exports.crearPlato = function(req, res) {
     else {
       console.log("No se encontro plato...inserting")
       res.json({
-       message: "Plato Guardado Exitosamente!",
-       plato:plato
-     })
+        message: "Plato Guardado Exitosamente!",
+        plato: plato
+      })
       plato.save(err => console.log(err))
     }
 
@@ -140,12 +142,13 @@ exports.crearPlato = function(req, res) {
 
 exports.platosList = function(req, res) {
   Plato.find(function(err, platos) {
-    if(err){
+    if (err) {
       console.log(err)
     }
     res.json({
       message: 'All found',
-      platos})
+      platos
+    })
   });
 }
 
@@ -182,8 +185,8 @@ exports.crearChofer = function(req, res) {
       console.log("No customer found with that ID...inserting")
       chofer.save(err => console.log(err))
       res.json({
-            message: "Plato Guardado Exitosamente!"
-          })
+        message: "Plato Guardado Exitosamente!"
+      })
     }
 
   })
@@ -193,45 +196,75 @@ exports.crearChofer = function(req, res) {
 
 exports.reporteSemanal = function(req, res) {
   Plato.find(function(err, platos) {
-    if(err){
+    if (err) {
       console.log(err)
     }
-        Customer.find(function(err, users) {
-      if(err){
+    Customer.find(function(err, users) {
+      if (err) {
         console.log(err)
       }
-     
+
       const combine = e => {
         const invalidos = []
         const { _id, nombre, apellido, alergias, almuerzos, cenas } = e
         const alergiaCheck = alergia => {
           const validos = []
-           
-         platos.map(plato => {
-           
-           if(plato.ingredientes.indexOf(alergia, 0) > -1){
-             if(invalidos.indexOf(plato.nombre, 0) > -1){
-               console.log('plato existe')
-               
-             } else {
-               invalidos.push(plato.nombre)
-             }
-             
-           }
-         })
-         return invalidos
+
+          platos.map(plato => {
+
+            if (plato.ingredientes.indexOf(alergia, 0) > -1) {
+              if (invalidos.indexOf(plato.nombre, 0) > -1) {
+                console.log('plato existe')
+
+              }
+              else {
+                invalidos.push(plato.nombre)
+              }
+
+            }
+          })
+          return invalidos
         }
-        
+
         const platosInvalidos = alergias.map(alergiaCheck)
-        const platosDenegados =  platosInvalidos.reduce((x, y) => x.findIndex(e=>e.nombre==y.nombre)<0 ? [...x, y]: x, [])
-  
-        return  {_id, nombre, apellido, platosDenegados: platosDenegados[0] || [], almuerzos, cenas, platos}
+        const platosDenegados = platosInvalidos.reduce((x, y) => x.findIndex(e => e.nombre == y.nombre) < 0 ? [...x, y] : x, [])
+        console.log(almuerzos)
+        const platosSugeridos = () => {
+          for (let key in almuerzos) {
+            console.log(almuerzos[key])
+            const getRand = (min, max) => {
+              min = Math.ceil(min)
+              max = Math.floor(max)
+              return Math.floor(Math.random() * (max - min)) + min
+            }
+            const platoCanasta = []
+            while (platoCanasta.length < almuerzos[key]) {
+              const x = getRand(0, platos.length)
+              const randPlato = platos[x]
+              console.log(x, platos.length, "--")
+              if (platosDenegados.indexOf(randPlato.nombre, 0) > -1 || platoCanasta.indexOf(randPlato.nombre, 0) > -1) {
+                const index = platosDenegados.indexOf(randPlato.nombre, 0)
+                platoCanasta.splice(index, 1)
+
+                console.log('cant push plate')
+
+              }
+              else {
+                platoCanasta.push(randPlato.nombre)
+
+              }
+            }
+            console.log(platoCanasta)
+          }
+        }
+        platosSugeridos()
+        return { _id, nombre, apellido, platosDenegados: platosDenegados[0] || [], almuerzos, cenas, platos }
       }
       const report = users.map(combine)
-      console.log(report)
-    res.json({
-      message: 'All found',
-      report})
-  });
+      res.json({
+        message: 'All found',
+        report
+      })
+    });
   });
 }
